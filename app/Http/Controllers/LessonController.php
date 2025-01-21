@@ -15,11 +15,12 @@ class LessonController extends Controller
     {
         return $this->successResponse(Lesson::all());
     }
-    public function store(LessonRequest $request , ImageService $imageService)
+
+    public function store(LessonRequest $request, ImageService $imageService)
     {
-        return $this->handleRequest(function () use ($request , $imageService) {
+        return $this->handleRequest(function () use ($request, $imageService) {
             $validated = $request->validated();
-            $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'] , "lessons");
+            $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'], "lessons");
             $lesson = Lesson::create($validated);
             return $this->successResponse($lesson);
         });
@@ -32,18 +33,20 @@ class LessonController extends Controller
             return $this->successResponse($lesson);
         });
     }
-    public function update(LessonUpdateRequest $request,  $id , ImageService $imageService)
+
+    public function update(LessonUpdateRequest $request, $id, ImageService $imageService)
     {
-        return $this->handleRequest(function () use ($request, $id , $imageService) {
+        return $this->handleRequest(function () use ($request, $id, $imageService) {
             $lesson = Lesson::findOrFail($id);
             $validated = $request->validated();
-            if($validated['lesson_pdf']){
-                $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'] , "lessons" , $lesson->lesson_pdf );
+            if ($validated['lesson_pdf']) {
+                $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'], "lessons", $lesson->lesson_pdf);
             }
             $lesson->update($validated);
             return $this->successResponse($lesson);
         });
     }
+
     public function destroy($id)
     {
         return $this->handleRequest(function () use ($id) {

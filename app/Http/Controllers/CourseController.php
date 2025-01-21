@@ -14,13 +14,13 @@ class CourseController extends Controller
         return $this->successResponse(Course::all());
     }
 
-    public function store(CourseRequest $request , ImageService $imageService)
+    public function store(CourseRequest $request, ImageService $imageService)
     {
-        return  $this->handleRequest(function() use ($request, $imageService){
+        return $this->handleRequest(function () use ($request, $imageService) {
             $validated = $request->validated();
-            $validated['course_image'] = $imageService->uploadImage($validated['course_image'] , "courses");
+            $validated['course_image'] = $imageService->uploadImage($validated['course_image'], "courses");
             $course = Course::create($validated);
-            return $this->successResponse($course , 201);
+            return $this->successResponse($course, 201);
         });
     }
 
@@ -32,18 +32,18 @@ class CourseController extends Controller
         });
     }
 
-    public function update(CourseUpdateRequest $request,  $id , ImageService $imageService)
+    public function update(CourseUpdateRequest $request, $id, ImageService $imageService)
     {
-        return $this->handleRequest(function () use ($request, $id , $imageService) {
+        return $this->handleRequest(function () use ($request, $id, $imageService) {
             $course = Course::findOrFail($id);
             $validated = $request->validated();
-            $validated['course_image'] = $imageService->uploadImage($validated['course_image'] , "courses" , $course->course_image);
+            $validated['course_image'] = $imageService->uploadImage($validated['course_image'], "courses", $course->course_image);
             $course->update($validated);
             return $this->successResponse($course);
         });
     }
 
-    public function destroy( $id)
+    public function destroy($id)
     {
         return $this->handleRequest(function () use ($id) {
             $course = Course::findOrFail($id);
@@ -52,14 +52,17 @@ class CourseController extends Controller
         });
     }
 
-    public function CourseStudents($id){
-        return $this->handleRequest(function () use ($id){
-           $course = Course::findOrFail($id);
-           return $this->successResponse($course->students);
+    public function CourseStudents($id)
+    {
+        return $this->handleRequest(function () use ($id) {
+            $course = Course::findOrFail($id);
+            return $this->successResponse($course->students);
         });
     }
-    public function CourseLessons($id){
-        return $this->handleRequest(function () use ($id){
+
+    public function CourseLessons($id)
+    {
+        return $this->handleRequest(function () use ($id) {
             $course = Course::findOrFail($id);
             return $this->successResponse($course->lessons);
         });

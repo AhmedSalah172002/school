@@ -23,7 +23,7 @@ class RegisterRequest extends CustomFormRequest
             'username' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'phone' => ['required','string','regex:/^(010|011|012|015)[0-9]{7}/','unique:users,phone'],
+            'phone' => ['required', 'string', 'regex:/^(010|011|012|015)[0-9]{7}/', 'unique:users,phone'],
             'role' => 'required|string|in:teacher,student,admin',
         ];
     }

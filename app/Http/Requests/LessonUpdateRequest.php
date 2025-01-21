@@ -41,6 +41,7 @@ class LessonUpdateRequest extends CustomFormRequest
             ],
         ];
     }
+
     public function messages(): array
     {
         return [

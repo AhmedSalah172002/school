@@ -22,6 +22,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -64,6 +65,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(Student::class);
     }
+
     protected function casts(): array
     {
         return [

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Service;
 
 use App\Http\Controllers\Controller;
@@ -8,6 +9,7 @@ use Stripe\Stripe;
 class PaymentService extends Controller
 {
     protected $stripeSecretKey;
+
     public function __construct()
     {
         $this->stripeSecretKey = env('STRIPE_SECRET');
@@ -39,7 +41,7 @@ class PaymentService extends Controller
             [
                 'price_data' => [
                     'currency' => 'usd',
-                    'unit_amount' => (float) $course->price * 100,
+                    'unit_amount' => (float)$course->price * 100,
                     'product_data' => [
                         'name' => $course->title,
                     ],

@@ -27,7 +27,7 @@ class Controller extends BaseController
 
         }
     }
-    
+
     protected function errorResponse($message = "Failed", $statusCode = 500)
     {
         return response()->json([
