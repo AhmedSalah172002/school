@@ -16,17 +16,12 @@ class CourseController extends Controller
 
     public function store(CourseRequest $request , ImageService $imageService)
     {
-        try {
+        return  $this->handleRequest(function() use ($request, $imageService){
             $validated = $request->validated();
             $validated['course_image'] = $imageService->uploadImage($validated['course_image'] , "courses");
             $course = Course::create($validated);
             return $this->successResponse($course , 201);
-        }catch (\Exception $exception){
-            return $this->errorResponse($exception->getMessage());
-        }
-//        return $this->handleRequest(function () use ($request , $imageService) {
-//
-//        });
+        });
     }
 
     public function show($id)

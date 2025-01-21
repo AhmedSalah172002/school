@@ -45,7 +45,7 @@ Route::middleware([AdminRole::class])->group(function () {
     Route::ApiResource('lessons', LessonController::class);
     Route::put('lesson/finished/{id}', [LessonController::class, 'finished']);
     Route::get('students', [StudentController::class, 'index']);
-    Route::get('courses/{id}/students' , [CourseController::class, 'courseStudents']);
+    Route::get('courses/{id}/students' , [CourseController::class, 'CourseStudents']);
     Route::get('courses/{id}/lessons' , [CourseController::class, 'CourseLessons']);
 });
 

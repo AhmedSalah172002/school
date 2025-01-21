@@ -53,7 +53,4 @@ class AbsentController extends Controller
             return $this->successResponse($lessons);
         });
     }
-
-
-
 }

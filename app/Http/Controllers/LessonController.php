@@ -7,7 +7,6 @@ use App\Http\Requests\LessonUpdateRequest;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Service\ImageService;
-use Illuminate\Http\Request;
 
 class LessonController extends Controller
 {
@@ -19,18 +18,18 @@ class LessonController extends Controller
     public function store(LessonRequest $request , ImageService $imageService)
     {
         return $this->handleRequest(function () use ($request , $imageService) {
-           $validated = $request->validated();
-           $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'] , "lessons");
-           $lesson = Lesson::create($validated);
-           return $this->successResponse($lesson);
+            $validated = $request->validated();
+            $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'] , "lessons");
+            $lesson = Lesson::create($validated);
+            return $this->successResponse($lesson);
         });
     }
 
     public function show($id)
     {
         return $this->handleRequest(function () use ($id) {
-           $lesson = Lesson::findOrFail($id);
-           return $this->successResponse($lesson);
+            $lesson = Lesson::findOrFail($id);
+            return $this->successResponse($lesson);
         });
     }
     public function update(LessonUpdateRequest $request,  $id , ImageService $imageService)
