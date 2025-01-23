@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Log;
 class ImageService
 {
 
-    public function uploadImage($image, $folder = 'products'  , $oldImage = null)
+    public function uploadImage($image, $folder = 'products', $oldImage = null)
     {
-        if (is_string($image)) {
+        if (filter_var($image, FILTER_VALIDATE_URL)) {
             return $image;
         }
 
@@ -18,8 +18,8 @@ class ImageService
             $this->deleteOldImage($oldImage);
         }
 
-        return Cloudinary::upload($image->getRealPath(), [
-            'folder' => "{$folder}/" . date("Y") . "/" . date("M") ,
+        return Cloudinary::upload($image, [
+            'folder' => "{$folder}/" . date("Y") . "/" . date("M"),
         ])->getSecurePath();
     }
 

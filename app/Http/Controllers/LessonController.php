@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LessonRequest;
-use App\Http\Requests\LessonUpdateRequest;
 use App\Models\Course;
 use App\Models\Lesson;
 use App\Service\ImageService;
-use Illuminate\Http\Request;
 
 class LessonController extends Controller
 {
@@ -16,35 +14,38 @@ class LessonController extends Controller
     {
         return $this->successResponse(Lesson::all());
     }
-    public function store(LessonRequest $request , ImageService $imageService)
+
+    public function store(LessonRequest $request, ImageService $imageService)
     {
-        return $this->handleRequest(function () use ($request , $imageService) {
-           $validated = $request->validated();
-           $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'] , "lessons");
-           $lesson = Lesson::create($validated);
-           return $this->successResponse($lesson);
+        return $this->handleRequest(function () use ($request, $imageService) {
+            $validated = $request->validated();
+            $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'], "lessons");
+            $lesson = Lesson::create($validated);
+            return $this->successResponse($lesson);
         });
     }
 
     public function show($id)
     {
         return $this->handleRequest(function () use ($id) {
-           $lesson = Lesson::findOrFail($id);
-           return $this->successResponse($lesson);
+            $lesson = Lesson::findOrFail($id);
+            return $this->successResponse($lesson);
         });
     }
-    public function update(LessonUpdateRequest $request,  $id , ImageService $imageService)
+
+    public function update(LessonRequest $request, $id, ImageService $imageService)
     {
-        return $this->handleRequest(function () use ($request, $id , $imageService) {
+        return $this->handleRequest(function () use ($request, $id, $imageService) {
             $lesson = Lesson::findOrFail($id);
             $validated = $request->validated();
-            if($validated['lesson_pdf']){
-                $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'] , "lessons" , $lesson->lesson_pdf );
+            if ($validated['lesson_pdf']) {
+                $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'], "lessons", $lesson->lesson_pdf);
             }
             $lesson->update($validated);
             return $this->successResponse($lesson);
         });
     }
+
     public function destroy($id)
     {
         return $this->handleRequest(function () use ($id) {
