@@ -14,17 +14,9 @@ class DeniedTeacherMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(public $username , public $reason)
-    {
-        //
-    }
 
-    /**
-     * Get the message envelope.
-     */
+    public function __construct(public $username , public $reason){}
+
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -36,9 +28,6 @@ class DeniedTeacherMail extends Mailable
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
@@ -50,11 +39,6 @@ class DeniedTeacherMail extends Mailable
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
     public function attachments(): array
     {
         return [];

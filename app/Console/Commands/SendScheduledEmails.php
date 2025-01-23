@@ -34,18 +34,18 @@ class SendScheduledEmails extends Command
         foreach ($schedules as $schedule) {
             $scheduleTimeStr = trim($schedule->time);
 
-            if($this->isWithinFiveMinutesBeforeSchedule($scheduleTimeStr)) {
+            if ($this->isWithinFiveMinutesBeforeSchedule($scheduleTimeStr)) {
                 $course = Course::findOrFail($schedule->course_id);
 
-              if($schedule->teacher_email){
-                  Mail::to($schedule->teacher_email)->send(new TeacherReminderMail($course->teacher->user->username, $course->title));
-              }
-              if($schedule->students_emails){
-                  $students_emails = json_decode($schedule->students_emails , true);
-                  foreach ($students_emails as $student_email) {
-                      Mail::to($student_email)->send(new TeacherReminderMail('Student', $course->title));
-                  }
-              }
+                if ($schedule->teacher_email) {
+                    Mail::to($schedule->teacher_email)->send(new TeacherReminderMail($course->teacher->user->username, $course->title));
+                }
+                if ($schedule->students_emails) {
+                    $students_emails = json_decode($schedule->students_emails, true);
+                    foreach ($students_emails as $student_email) {
+                        Mail::to($student_email)->send(new TeacherReminderMail('Student', $course->title));
+                    }
+                }
 
             }
         }

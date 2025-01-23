@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Illuminate\Support\Facades\Log;
 
 class ImageService
 {

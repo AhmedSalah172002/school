@@ -10,11 +10,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class StudentRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         try {
@@ -25,13 +20,13 @@ class StudentRole
                 return response()->json([
                     'success' => false,
                     'message' => 'Student not found'
-                ]);
+                ],403);
             }
         } catch (\Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage()
-            ]);
+            ],500);
         }
         return $next($request);
     }

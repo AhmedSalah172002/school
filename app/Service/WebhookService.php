@@ -20,8 +20,8 @@ class WebhookService
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
         $secret = env('STRIPE_SECRET');
-        // this is for local
-        $endpoint_secret = 'whsec_9cc81324992ea05354c3c078aaa50514e7d1b1980925f112213a90ec1d44cbe3';
+
+        $endpoint_secret = env('WEBHOOK_SECRET');
 
         $payload = @file_get_contents('php://input');
         $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];

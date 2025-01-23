@@ -28,7 +28,7 @@ class PaymentService extends Controller
 
             try {
                 $checkout_session = Session::create($data);
-                return $this->successResponse(['url' => $checkout_session->url]);
+                return $this->successResponse(['url' => $checkout_session->url] , 201);
             } catch (\Exception $e) {
                 return $this->errorResponse(['message' => 'Payment failed: ' . $e->getMessage()]);
             }

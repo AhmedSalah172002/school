@@ -21,7 +21,7 @@ class LessonController extends Controller
             $validated = $request->validated();
             $validated['lesson_pdf'] = $imageService->uploadImage($validated['lesson_pdf'], "lessons");
             $lesson = Lesson::create($validated);
-            return $this->successResponse($lesson);
+            return $this->successResponse($lesson , 201);
         });
     }
 
@@ -51,7 +51,7 @@ class LessonController extends Controller
         return $this->handleRequest(function () use ($id) {
             $lesson = Lesson::findOrFail($id);
             $lesson->delete();
-            return $this->successResponse($lesson);
+            return $this->successResponse(['message' => 'Lesson deleted successfully']);
         });
     }
 
@@ -59,9 +59,12 @@ class LessonController extends Controller
     {
         return $this->handleRequest(function () use ($id) {
             $lesson = Lesson::findOrFail($id);
-            $lesson->update(['finished' => true]);
+            $user = auth()->user();
             $course = Course::findOrFail($lesson->course_id);
-
+            if($course->teacher->user->id !== $user->id){
+                return $this->errorResponse('Unauthorized', 403);
+            }
+            $lesson->update(['finished' => true]);
             $totalLessons = Lesson::where('course_id', $course->id)->count();
             $finishedLessons = Lesson::where('course_id', $course->id)->where('finished', true)->count();
             $completionPercentage = number_format(($finishedLessons / $totalLessons) * 100, 2);
