@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 class ImageService
 {
 
-    public function uploadImage($image, $folder = 'products', $oldImage = null)
+    public function uploadImage($image, $folder = 'products'  , $oldImage = null)
     {
         if (is_string($image)) {
             return $image;
@@ -19,7 +19,7 @@ class ImageService
         }
 
         return Cloudinary::upload($image->getRealPath(), [
-            'folder' => "{$folder}/" . date("Y") . "/" . date("M"),
+            'folder' => "{$folder}/" . date("Y") . "/" . date("M") ,
         ])->getSecurePath();
     }
 

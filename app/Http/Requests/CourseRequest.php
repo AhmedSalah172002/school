@@ -24,10 +24,10 @@ class CourseRequest extends CustomFormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'course_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'day' => 'required|in:Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday',
             'time' => 'required|date_format:H:i',
             'price' => 'required|numeric|min:0',
+            'course_image' =>  'required|string',
         ];
     }
 
@@ -46,6 +46,9 @@ class CourseRequest extends CustomFormRequest
 
             'time.required' => 'The course time is required.',
             'time.date_format' => 'The course time must be in the format HH:mm (24-hour format).',
+
+            'course_image.required' => 'The course image is required.',
+            'course_image.string' => 'The course image must be a path or url.',
 
             'price.required' => 'The course price is required.',
             'price.numeric' => 'The course price must be a number.',

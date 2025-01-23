@@ -19,18 +19,18 @@ class TeacherController extends Controller
     public function show($id)
     {
         return $this->handleRequest(function () use ($id) {
-            $teacher = Teacher::findOrFail($id);
-            return $this->successResponse($teacher);
+           $teacher = Teacher::findOrFail($id);
+           return $this->successResponse($teacher);
         });
     }
 
-    public function update(TeacherRequest $request, $id)
+    public function update(TeacherRequest $request,  $id)
     {
         return $this->handleRequest(function () use ($request, $id) {
-            $validated = $request->validated();
-            $teacher = Teacher::findOrFail($id);
-            $teacher->update($validated);
-            return $this->successResponse($teacher);
+           $validated = $request->validated();
+           $teacher = Teacher::findOrFail($id);
+           $teacher->update($validated);
+           return $this->successResponse($teacher);
         });
     }
 
@@ -42,7 +42,6 @@ class TeacherController extends Controller
             return $this->successResponse(['message' => 'Teacher deleted successfully.']);
         });
     }
-
     public function teacherProfile(TeacherRequest $request)
     {
         {
@@ -55,37 +54,32 @@ class TeacherController extends Controller
             });
         }
     }
-
-    public function enrollTeacherToCourse($id, Request $request)
+    public function enrollTeacherToCourse($id , Request $request)
     {
-        return $this->handleRequest(function () use ($id, $request) {
-            $teacher = Teacher::findOrFail($id);
-            $course = Course::findOrFail($request->course_id);
-            $course->update(['teacher_id' => (integer)$id]);
-            return $this->successResponse($course);
+        return $this->handleRequest(function () use ($id , $request) {
+           $teacher = Teacher::findOrFail($id);
+           $course = Course::findOrFail($request->course_id);
+           $course->update(['teacher_id' => (integer)$id]);
+           return $this->successResponse($course);
         });
     }
 
     public function activeTeachers()
     {
-        return $this->successResponse(Teacher::where(['status' => true])->get());
+      return $this->successResponse(Teacher::where(['status' => true])->get());
     }
-
-    public function approvedTeacher($id)
-    {
+    public function approvedTeacher($id){
         return $this->handleRequest(function () use ($id) {
             $teacher = Teacher::findOrFail($id);
             $teacher->update(['status' => true]);
             return $this->successResponse(['message' => 'Teacher approved successfully.']);
         });
     }
-
-    public function denyTeacher(Request $request, $id)
-    {
-        return $this->handleRequest(function () use ($id, $request) {
+    public function denyTeacher(Request $request , $id){
+        return $this->handleRequest(function () use ($id , $request) {
             $teacher = Teacher::findOrFail($id);
             $teacher->update(['status' => false]);
-            return $this->successResponse(['message' => 'Teacher Denied successfully.', 'reason' => $request->reason]);
+            return $this->successResponse(['message' => 'Teacher Denied successfully.' , 'reason' => $request->reason]);
         });
     }
 }
