@@ -11,10 +11,13 @@ class Absent extends Model
 
     protected $guarded = [];
 
-    public function student(){
+    public function student()
+    {
         return $this->belongsTo(Student::class);
     }
-    public function subject(){
+
+    public function subject()
+    {
         return $this->belongsTo(Lesson::class);
     }
 }

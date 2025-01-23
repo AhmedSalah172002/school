@@ -14,20 +14,20 @@ class TeacherRole
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
             $teacher = Teacher::where(['user_id' => $user->id])->first();
-            if(! $teacher){
+            if (!$teacher) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Teacher not found'
                 ]);
             }
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage()

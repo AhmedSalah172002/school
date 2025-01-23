@@ -25,15 +25,17 @@ class UserService extends Controller
             ]);
         }
     }
-    public function loginUser($credentials){
+
+    public function loginUser($credentials)
+    {
         try {
-            if (! $token = JWTAuth::attempt($credentials)) {
+            if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json(['error' => 'Invalid credentials'], 401);
             }
             $user = auth()->user();
             $token = JWTAuth::claims(['id' => $user->id])->fromUser($user);
-            return  $token;
-        }catch (JWTException $e) {
+            return $token;
+        } catch (JWTException $e) {
             throw new \Exception("could not create token");
         }
     }
@@ -41,13 +43,13 @@ class UserService extends Controller
     public function getMe()
     {
         try {
-            if (! $user = JWTAuth::parseToken()->authenticate()) {
-                return $this->errorResponse('User not found' , 404);
-            }else{
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return $this->errorResponse('User not found', 404);
+            } else {
                 return $user;
             }
         } catch (JWTException $e) {
-            return $this->errorResponse('Invalid token' , 400);
+            return $this->errorResponse('Invalid token', 400);
         }
     }
 }

@@ -2,16 +2,22 @@
 
 namespace App\Service;
 
+use App\Models\Schedule;
 use App\Models\Student;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
 use Stripe\Webhook;
 
-class WebhookService {
+class WebhookService
+{
 
-    public function webhook($payload = []) {
+    public function webhook($payload = [])
+    {
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
         $secret = env('STRIPE_SECRET');
+        // this is for local
         $endpoint_secret = 'whsec_9cc81324992ea05354c3c078aaa50514e7d1b1980925f112213a90ec1d44cbe3';
 
         $payload = @file_get_contents('php://input');
@@ -22,28 +28,67 @@ class WebhookService {
             $event = Webhook::constructEvent(
                 $payload, $sig_header, $endpoint_secret
             );
-        } catch(\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException $e) {
             http_response_code(400);
             echo json_encode(['Error parsing payload: ' => $e->getMessage()]);
             exit();
-        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
             http_response_code(400);
             echo json_encode(['Error verifying webhook signature: ' => $e->getMessage()]);
             exit();
         }
 
-
         switch ($event->type) {
             case 'payment_intent.succeeded':
-                $paymentIntent = $event->data->object->metadata;
-                $student = Student::where('user_id',$paymentIntent->user_id)->first();
-                $student->courses()->attach($paymentIntent->course_id);
+                $this->paymentIntentWebhook($event);
                 break;
 
             default:
                 echo 'Received unknown event type ' . $event->type;
         }
         http_response_code(200);
+    }
+
+
+    private function paymentIntentWebhook($event)
+    {
+        try {
+            $paymentIntent = $event->data->object->metadata;
+            if (empty($paymentIntent->user_id) || empty($paymentIntent->course_id)) {
+                return;
+            }
+
+            $student = Student::where('user_id', $paymentIntent->user_id)->first();
+            if (!$student) {
+                Log::error('Student not found for user ID: ' . $paymentIntent->user_id);
+                return;
+            }
+
+            DB::beginTransaction();
+
+            $student->courses()->attach($paymentIntent->course_id);
+
+            $schedule = Schedule::where('course_id', $paymentIntent->course_id)->first();
+
+            if (!$schedule) {
+                DB::rollBack();
+                return;
+            }
+
+            $emails = json_decode($schedule->students_emails, true) ?? [];
+
+            if (!in_array($student->user->email, $emails)) {
+                $emails[] = $student->user->email; // Add new email
+            }
+
+            $schedule->students_emails = json_encode($emails);
+            $schedule->save();
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
         }
+    }
 
 }

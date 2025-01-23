@@ -11,10 +11,13 @@ class Lesson extends Model
 
     protected $guarded = [];
 
-    public function course(){
+    public function course()
+    {
         return $this->belongsTo(Course::class);
     }
-    public function absents(){
+
+    public function absents()
+    {
         return $this->hasMany(Absent::class);
     }
 }

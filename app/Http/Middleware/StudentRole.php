@@ -13,7 +13,7 @@ class StudentRole
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response) $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -21,13 +21,13 @@ class StudentRole
             $user = JWTAuth::parseToken()->authenticate();
             $student = Student::where(['user_id' => $user->id])->first();
 
-            if(! $student){
+            if (!$student) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Student not found'
                 ]);
             }
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return response()->json([
                 'success' => false,
                 'message' => $exception->getMessage()
