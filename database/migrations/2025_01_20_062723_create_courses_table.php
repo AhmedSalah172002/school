@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->foreignId('teacher_id')->nullable()->constrained('users')->cascadeOnDelete();
             $table->text('description');
             $table->string('course_image');
+            $table->string('course_qrcode')->nullable();
             $table->string('day');
             $table->time('time');
             $table->decimal('completed', 5, 2)->default(0);

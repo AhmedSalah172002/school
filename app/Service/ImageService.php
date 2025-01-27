@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\File;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ImageService
 {
@@ -21,7 +23,6 @@ class ImageService
             'folder' => "{$folder}/" . date("Y") . "/" . date("M"),
         ])->getSecurePath();
     }
-
     private function deleteOldImage($oldImage)
     {
         $publicId = $this->getPublicIdFromUrl($oldImage);
@@ -34,5 +35,25 @@ class ImageService
     {
         $parts = explode('/', $url);
         return explode('.', join('/', array_slice($parts, 7)))[0];
+    }
+
+    public function uploadQrcode ($data , $folder_name , $oldImage = null){
+
+        if($oldImage !== null){
+            $this->deleteOldImage($oldImage);
+        }
+
+        $directoryPath = storage_path("app/public/{$folder_name}");
+        if (!File::exists($directoryPath)) {
+            File::makeDirectory($directoryPath, 0755, true); // Create the directory if it doesn't exist
+        }
+        $uuid = uniqid();
+        $qrCode = QrCode::size(300)->format('png')->generate(json_encode($data));
+        $tempFilePath = storage_path("app/public/{$folder_name}/qrcode_{$uuid}.png");
+        File::put($tempFilePath, $qrCode);
+        $qrCodeLink = $this->uploadImage($tempFilePath, "{$folder_name}/qrcode");
+        File::delete($tempFilePath);
+
+        return $qrCodeLink;
     }
 }

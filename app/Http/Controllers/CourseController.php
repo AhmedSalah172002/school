@@ -7,7 +7,8 @@ use App\Models\Course;
 use App\Models\Schedule;
 use App\Service\ImageService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class CourseController extends Controller
 {
@@ -21,6 +22,7 @@ class CourseController extends Controller
         return $this->handleRequest(function () use ($request, $imageService) {
             $validated = $request->validated();
             $validated['course_image'] = $imageService->uploadImage($validated['course_image'], "courses");
+            $validated['course_qrcode'] = $imageService->uploadQrcode(collect($validated)->except(['course_image']), "courses");
             DB::beginTransaction();
             $course = Course::create($validated);
             $schedule = Schedule::create([
@@ -29,7 +31,9 @@ class CourseController extends Controller
                 'time' => $validated['time'],
             ]);
             DB::commit();
-            return $this->successResponse($course, 201);
+            return $this->successResponse([
+                'course' => $course,
+            ], 201);
         });
     }
 
@@ -47,6 +51,7 @@ class CourseController extends Controller
             $course = Course::findOrFail($id);
             $validated = $request->validated();
             $validated['course_image'] = $imageService->uploadImage($validated['course_image'], "courses", $course->course_image);
+            $validated['course_qrcode'] = $imageService->uploadQrcode(collect($validated)->except(['course_image']), "courses" , $course->course_qrcode);
             $course->update($validated);
             $schedule = Schedule::where(['course_id' => $course->id])->first();
             $schedule->update([
