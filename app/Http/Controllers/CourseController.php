@@ -91,7 +91,15 @@ class CourseController extends Controller
     public function generateLessonsByAi(Request $request ,$id, OpenAIService  $service){
         return $this->handleRequest(function () use ($id, $request, $service) {
             $course = Course::findOrFail($id);
-            $lessons = $service->generateText("Generate {$request->lessons_count} lesson titles about {$course->title}. The response should be an array of JSON objects like JavaScript, and only contain the data in the following format: [{title: 'x', description: 'z'}, {title: 'x', description: 'z'}, {title: 'x', description: 'z'}]. Do not write anything else outside the array. The response must start with [ and end with ].");
+            $validated = $request->validate([
+                'lessons_count' => 'required|integer|min:1|max:5',
+            ]);
+            $lessons = $service->generateText("Generate {$validated['lessons_count']} lesson titles about {$course->title}. The response should be an array of JSON objects like JavaScript, and only contain the data in the following format: [{title: 'x', description: 'z'}, {title: 'x', description: 'z'}, {title: 'x', description: 'z'}]. Do not write anything else outside the array. The response must start with [ and end with ].");
+
+            if(is_array($lessons) === false){
+                return $this->errorResponse("Invalid response from AI" , 400);
+            }
+
             foreach($lessons as $lesson){
                 Lesson::create([
                     "title" => $lesson->title,
