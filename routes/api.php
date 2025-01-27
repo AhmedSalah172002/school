@@ -48,6 +48,7 @@ Route::middleware([AdminRole::class])->group(function () {
     Route::get('students', [StudentController::class, 'index']);
     Route::get('courses/{id}/students', [CourseController::class, 'CourseStudents']);
     Route::get('courses/{id}/lessons', [CourseController::class, 'CourseLessons']);
+    Route::post("courses/{id}/lessons-ai" , [CourseController::class, 'generateLessonsByAi']);
 });
 
 Route::post('webhook', [WebhookService::class, 'webhook']);

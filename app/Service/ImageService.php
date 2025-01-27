@@ -23,7 +23,8 @@ class ImageService
             'folder' => "{$folder}/" . date("Y") . "/" . date("M"),
         ])->getSecurePath();
     }
-    private function deleteOldImage($oldImage)
+
+    private function deleteOldImage($oldImage):void
     {
         $publicId = $this->getPublicIdFromUrl($oldImage);
         if ($publicId) {
@@ -37,9 +38,10 @@ class ImageService
         return explode('.', join('/', array_slice($parts, 7)))[0];
     }
 
-    public function uploadQrcode ($data , $folder_name , $oldImage = null){
+    public function uploadQrcode($data, $folder_name, $oldImage = null)
+    {
 
-        if($oldImage !== null){
+        if ($oldImage !== null) {
             $this->deleteOldImage($oldImage);
         }
 
